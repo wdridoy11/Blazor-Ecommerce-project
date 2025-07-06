@@ -1,0 +1,101 @@
+﻿@page "/category"
+@inject ICategoryRepository _categoryRepository;
+
+
+@if (IsProcessing)
+{
+    <div>
+        <dvi>
+            <p>Loading.....</p>
+        </dvi>
+    </div>
+}
+else
+{
+    <div>
+        <div>
+            <div class="flex items-center justify-between py-5">
+                <div>
+                    <h3 class="text-3xl font-medium">Category List</h3>
+                </div>
+                <div>
+                    <a href="/category/create" class="inline-block rounded-full bg-blue-600 px-6 py-3 text-white">
+                        <i class="fa-solid fa-plus mr-2"></i> Add Category
+                    </a>
+                </div>
+            </div>
+            <div class="w-full rounded-lg bg-slate-100 p-5">
+                @if (Categories.Any())
+                {
+                    <table class="w-full table-fixed border-collapse">
+                        <thead>
+                            <tr class="round-t-lg bg-white py-2 text-left">
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var category in Categories)
+                            {
+                                <tr>
+                                    <td>@category.Id</td>
+                                    <td>@category.Name</td>
+                                    <td>
+                                        <a href="@($"/category/update/{category.Id}")" class="inline-block rounded-full bg-blue-600 px-4 py-2 text-white">
+                                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                                         </a>
+
+                                        <button @onclick="()=>CategoryDelete(category.Id)" class="inline-block rounded-full bg-red-500 px-4 py-2 text-white">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <span class="text-red-500">No Categories Found</span>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    public bool IsProcessing { get; set; } = true;
+    private IEnumerable<Category> Categories { get; set; } = new List<Category>();
+    private int DeleteCategoryId { get; set; } = 0;
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await LoadCategory();
+            IsProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadCategory()
+    {
+        Categories = await _categoryRepository.GetAllAsync();    
+    }
+
+
+    private async Task CategoryDelete(int id)
+    {
+        DeleteCategoryId = id;
+        // IsProcessing = true;
+        // await _categoryRepository.DeleteAsync(id);
+        // IsProcessing = false;
+    }
+
+}
