@@ -1,0 +1,117 @@
+﻿@page "/product/create"
+@inject IProductRepository _productRepository
+
+
+@if (IsProcessing)
+{
+    <div>
+        <dvi>
+            <p>Loading.....</p>
+        </dvi>
+    </div>
+}
+else
+{
+    <div class="rounded-md bg-slate-200 p-10">
+        <div class="m-5 mx-auto max-w-5xl rounded-lg bg-white p-10">
+            <div>
+                <div>
+                    <h3 class="mb-5 text-3xl font-medium">@(Id == 0 ? "Create" :"Update") Products</h3>
+                </div>
+                <div>
+                    <EditForm Model="Product" FormName="ProductUpsertForm" OnValidSubmit="UpsertProduct">
+                        <DataAnnotationsValidator />
+
+                        <div class="mt-3">
+                            <label for="Name">Name</label>
+                            <InputText @bind-Value="Product.Name" class="w-full rounded-md border-2 border-gray-200 p-2" />
+                            <ValidationMessage For="@(() => Product.Name)" />
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="Name">Price</label>
+                            <InputNumber @bind-Value="Product.Price" class="w-full rounded-md border-2 border-gray-200 p-2" />
+                            <ValidationMessage For="@(() => Product.Price)" />
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="Name">DiscountPrice</label>
+                            <InputNumber @bind-Value="Product.DiscountPrice" class="w-full rounded-md border-2 border-gray-200 p-2" />
+                            <ValidationMessage For="@(() => Product.DiscountPrice)" />
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="Name">Description</label>
+                            <RadzenHtmlEditor 
+                                @bind-Value=Product.Description 
+                                style="height: 450px;" 
+                              />
+
+                            <ValidationMessage For="@(() => Product.Description)" />
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="Name">SpecialTag</label>
+                            <InputText @bind-Value="Product.Name" class="w-full rounded-md border-2 border-gray-200 p-2" />
+                            <ValidationMessage For="@(() => Product.SpecialTag)" />
+                        </div>
+
+                        
+
+                        @* <div>
+                            <label for="Name">StockQuantity</label>
+                            <InputNumber @bind-Value="Product.StockQuantity" class="w-full rounded-md border-2 border-gray-200 p-2" />
+                            <ValidationMessage For="@(() => Product.StockQuantity)" />
+                        </div>
+
+                        <div>
+                            <label for="Name">CategoryId</label>
+                            <InputNumber @bind-Value="Product.CategoryId" class="w-full rounded-md border-2 border-gray-200 p-2" />
+                            <ValidationMessage For="@(() => Product.CategoryId)" />
+                        </div> *@
+
+                        <div class="mt-3">
+                            <label for="Name">ImageUrl</label>
+                            <InputText @bind-Value="Product.ImageUrl" class="w-full rounded-md border-2 border-gray-200 p-2" />
+                            <ValidationMessage For="@(() => Product.ImageUrl)" />
+                        </div>
+                        
+
+                        <div class="mt-3 flex items-center justify-between">
+                            <div>
+                                <button type="submit" class="inline-block rounded-full bg-blue-600 px-6 py-3 text-white" disabled="@IsProcessing">
+                                    <i class="fa-solid fa-floppy-disk"></i> @(Id == 0 ? "Create" : "Update")
+                                </button>
+                            </div>
+                            <div>
+                                <a href="/product" class="inline-block rounded-full bg-gray-600 px-6 py-3 text-white" disabled="@IsProcessing">
+                                    <i class="fa-solid fa-angle-left"></i> Back To Category
+                                </a>
+                            </div>
+
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@code {
+    public int Id { get; set; } = 0;
+
+    public bool IsProcessing { get; set; } = false;
+
+    [SupplyParameterFromForm]
+    private Product Product { get; set; } = new Product();
+
+    public IEnumerable<Product> Products = new List<Product>();
+
+    private async Task UpsertProduct()
+    {
+        IsProcessing = true;
+        if(Product.Id == 0)
+        {
+            // await _productRepository.CreateAsync(Product);
+        }
+    }
+}

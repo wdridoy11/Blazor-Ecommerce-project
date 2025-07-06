@@ -19,7 +19,6 @@
   <ItemGroup>
     <Folder Include="Components\Pages\Cart_Pages\" />
     <Folder Include="Components\Pages\Order_Pages\" />
-    <Folder Include="Components\Pages\Product_Pages\" />
     <Folder Include="Utility\" />
   </ItemGroup>
 
