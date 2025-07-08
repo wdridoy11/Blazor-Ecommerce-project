@@ -1,4 +1,5 @@
 ﻿@page "/product/create"
+@page "/product/update/{id:int}"
 @inject IProductRepository _productRepository
 @inject ICategoryRepository _categoryRepository
 @inject IJSRuntime _JSRuntime;
@@ -103,7 +104,8 @@ else
     </div>
 }
 @code {
-    public int Id { get; set; } = 0;
+    [Parameter]
+    public int Id { get; set; }
 
     public bool IsProcessing { get; set; } = true;
 
@@ -150,7 +152,11 @@ else
 
     private async Task LoadProductAndCategory()
     {
-        Categories = await _categoryRepository.GetAllAsync();
+        if(Id > 0)
+        {
+            Product = await _productRepository.GetAsync(Id);
+        }
+          Categories = await _categoryRepository.GetAllAsync();
     }
 
 }

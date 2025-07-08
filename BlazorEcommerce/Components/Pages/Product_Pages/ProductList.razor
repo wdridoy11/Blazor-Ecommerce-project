@@ -1,4 +1,7 @@
 ﻿@page "/product"
+@inject IProductRepository _productRepository
+@inject IJSRuntime _JSRuntime
+@inject NavigationManager _navigationManager;
 
 @if (IsProcessing)
 {
@@ -22,6 +25,57 @@ else
                     </a>
                 </div>
             </div>
+
+            @* Product show *@
+            <div>
+                @if (Products.Any())
+                {
+                    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                                    Data="@Products" ColumnWidth="200px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single">
+                        <Columns>
+                            <RadzenDataGridColumn Property="Id" Filterable="false" Title="ID" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+                            <RadzenDataGridColumn Title="Photo" Frozen="true" Sortable="false" Filterable="false" Width="80px" TextAlign="TextAlign.Center">
+                                <Template Context="Products">
+                                    <RadzenImage Path="@(string.IsNullOrEmpty(Products.ImageUrl) ? "images/box.png" : Products.ImageUrl)" class="rz-gravatar" />
+                                </Template>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn Property="Name" Title="Name" Frozen="true" Width="160px" />
+                            <RadzenDataGridColumn Property="Price" Title="Price" Width="120px" />
+                            <RadzenDataGridColumn Property="DiscountPrice" Title="Discount Price" Width="120px" />
+                            <RadzenDataGridColumn Property="SpecialTag" Title="Special Tag" Width="120px" />
+                            <RadzenDataGridColumn Property="StockQuantity" Title="Stock Quantity" Width="120px" />
+                            <RadzenDataGridColumn Context="Products" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="200px">
+                                <Template Context="Products">
+
+                                    <RadzenButton 
+                                        Icon="Edit" 
+                                        Text="Edit" 
+                                        ButtonStyle="ButtonStyle.Info" 
+                                        Variant="Variant.Flat" 
+                                        Size="ButtonSize.Medium"
+                                        Click="()=>HandleProductEdit(Products.Id)"
+                                    >
+                                    </RadzenButton>
+                                    
+                                    <RadzenButton 
+                                        Icon="Delete" 
+                                        Text="Delete" 
+                                        ButtonStyle="ButtonStyle.Danger" 
+                                        Variant="Variant.Flat" 
+                                        Size="ButtonSize.Medium"
+                                        Click="()=>HandleDelete(Products.Id)">
+                                    </RadzenButton>
+                                    
+                                </Template>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+                }
+                
+
+
+            </div>
+
         </div>
     </div>
 }
@@ -29,5 +83,58 @@ else
 
 @code {
     public int Id { get; set; }
-    public bool IsProcessing { get; set; } = false;
+    public bool IsProcessing { get; set; } = true;
+    public int DeleteProductID { get; set; } 
+    private IEnumerable<Product> Products { get; set; } = new List<Product>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadProduct();
+            IsProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+
+
+    private async Task LoadProduct()
+    {
+        Products = await _productRepository.GetAllAsync();
+    }
+
+    private async Task HandleDelete(int id)
+    {
+
+        DeleteProductID = id;
+        bool isConfirmed = await _JSRuntime.InvokeAsync<bool>("isConfirm", "You will delete this product");
+        if(isConfirmed)
+        {
+            IsProcessing = true;
+            await _productRepository.DeleteAsync(id);
+            IsProcessing = false;
+            await LoadProduct();
+            await _JSRuntime.InvokeVoidAsync("showSwal", "success", "Product deleted successfully");
+        }
+    }
+
+    private async Task HandleProductEdit(int id)
+    {
+
+        bool isConfirmed = await _JSRuntime.InvokeAsync<bool>("isConfirm", "You will Edit this product");
+        if(isConfirmed)
+        {
+            IsProcessing = true;
+            await _JSRuntime.InvokeVoidAsync("showSwal", "success", "Product Update page redirect successfully");
+            _navigationManager.NavigateTo($"/product/update/{id}");
+            IsProcessing = false;
+        }
+    }
 }

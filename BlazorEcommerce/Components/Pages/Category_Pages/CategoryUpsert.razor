@@ -52,7 +52,7 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    public bool IsProcessing { get; set; } = false;
+    public bool IsProcessing { get; set; } = true;
 
     [SupplyParameterFromForm]
     private Category Category { get; set; } = new Category();
