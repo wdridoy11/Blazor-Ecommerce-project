@@ -1,7 +1,55 @@
 ﻿@page "/"
-
+@inject IProductRepository _productRepository
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (IsProcessing)
+{
+    <div>
+        <dvi>
+            <p>Loading.....</p>
+        </dvi>
+    </div>
+}
+else
+{
+<div>
+    <div class="container mx-auto px-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+            @foreach(var product in Products)
+            {
+                <div class="p-4">
+                    <a href="@($"/product/Details/{product.Id}")">
+                        <div class="rounded-lg border border-gray-300 bg-white transition-shadow duration-300 hover:shadow-lg">
+                            <img src="@product.ImageUrl" alt="@product.Name" class="mx-auto h-48 w-1/2 rounded-t-lg object-center" />
+                            <div class="border border-gray-300 p-4">
+                                <h2 class="text-xl font-semibold">@product.Name</h2>
+                                <p class="mt-2 text-lg font-bold">$@product.Price</p>
+                                <button class="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">Add to Cart</button>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+}
+@code{
+    private bool IsProcessing { get; set; } = true;
+    private IEnumerable<Product> Products = new List<Product>();
 
-<RadzenButton Text="Hi"></RadzenButton>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await LoadProduct();
+            IsProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadProduct()
+    {
+        Products = await _productRepository.GetAllAsync();
+    }
+}

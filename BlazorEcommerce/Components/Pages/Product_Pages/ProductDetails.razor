@@ -1,0 +1,68 @@
+﻿@page "/product/Details/{id:int}"
+@inject IProductRepository _productRepository
+
+@if (IsProcessing)
+{
+    <div>
+        <dvi>
+            <p>Loading.....</p>
+        </dvi>
+    </div>
+}
+else
+{
+    <div>
+        <div class="container mx-auto px-5">
+            <div>
+                <div className="grid grid-cols">
+                    <div className="space-y-4">
+                        <div className="aspect-square overflow-hidden rounded-lg">
+                                <img src=@Product.ImageUrl
+                                     alt=@Product.Name
+                                     className="w-full h-[600px] object-cover" 
+                                 />
+                        </div>
+                    </div>
+
+                    <div>
+                        <h1 className="text-3xl font-bold text-gray-900 mb-2">@Product.Name</h1>
+                        <div className="flex items-center space-x-4 mb-4">
+                            <div className="flex items-center">
+                                <span className="text-green-600 font-medium">(@Product.StockQuantity) In Stock</span>
+                            </div>
+                            <div className="flex items-center space-x-4 mb-6">
+                                <span className="text-3xl font-bold text-blue-600">$@Product.Price</span>
+                                <span className="text-xl text-gray-500 line-through">$@Product.DiscountPrice</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private bool IsProcessing { get; set; } = false;
+    private Product Product { get; set; } = new Product();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await LoadProducts();
+            IsProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadProducts()
+    {
+        Product = await _productRepository.GetAsync(Id);
+        // Load categories
+    }
+
+}
