@@ -37,24 +37,6 @@ else
                             </div>
                         </div>
 
-                        @* Quantity counter *@
-                        <div>
-                            <label class="mb-2 block text-sm font-medium text-gray-700"> Quantity</label>
-                             <div class="flex items-center space-x-3">
-
-                                <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter("decrement")'>
-                                    <i class="fa-solid fa-minus"></i>
-                                </button>
-
-                                <span class="min-w-[60px] rounded-md border border-gray-300 px-4 py-2 text-center">@QuantityCounter</span>
-
-                                <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter("increment")'>
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-
-                            </div>
-                        </div>
-
                         @* Add to Cart Button *@
 
 
@@ -98,7 +80,6 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    private int QuantityCounter { get; set; } = 1;
     private bool IsProcessing { get; set; } = false;
     private Product Product { get; set; } = new Product();
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -116,16 +97,5 @@ else
         Product = await _productRepository.GetAsync(Id);
     }
 
-    private void HandleQuantityCounter(string value)
-    {
-        if(value == "increment")
-        {
-            QuantityCounter++;
-        }
-        else if(value == "decrement" && QuantityCounter > 1)
-        {
-            QuantityCounter--;
-        }
-    }
 
 }

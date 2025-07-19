@@ -1,0 +1,116 @@
+﻿@page "/cart"
+
+@if (IsProcessing)
+{
+    <div>
+        <dvi>
+            <p>Loading.....</p>
+        </dvi>
+    </div>
+}
+else
+{
+    <div class="bg-[#EFF3F6] p-5">
+       <div class="container mx-auto px-5">
+           <div>
+               <div class="grid grid-cols-3 gap-5">
+                   <div class="col-span-2 rounded-md bg-white p-5">
+                       <div>
+                           <table class="w-full table-fixed">
+                               <thead>
+                                   <tr class="text-left">
+                                       <th>Product</th>
+                                       <th>Price</th>
+                                       <th>Quantity</th>
+                                       <th>Total Price</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   <tr class="items-center">
+                                       <td>
+                                           <div class="flex items-center gap-5">
+                                                <div>
+                                                    <img class="h-20 w-20 rounded-md" src="./images/Image-11.jpg" alt="Product" />
+                                                </div>
+                                                <div>
+                                                    <h4>Headphone</h4>
+                                                </div>
+                                           </div>
+                                       </td>
+                                       <td>
+                                           $20.50
+                                       </td>
+                                       <td>
+                                            <div>
+                                                <label class="mb-2 block text-sm font-medium text-gray-700"> Quantity</label>
+                                                <div class="flex items-center space-x-3">
+
+                                                    <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter("decrement")'>
+                                                        <i class="fa-solid fa-minus"></i>
+                                                    </button>
+
+                                                    <span class="min-w-[60px] rounded-md border border-gray-300 px-4 py-2 text-center">@QuantityCounter</span>
+
+                                                    <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter("increment")'>
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                       </td>
+                                       <td>
+                                           $20.50
+                                       </td>
+                                   </tr>
+                               </tbody>
+                           </table>
+                       </div>
+                       <div>
+
+                       </div>
+                   </div>
+                    <div class="col-span-1 rounded-md bg-white p-5">
+                        <h3 class="mb-2 text-2xl font-semibold">Checkout Summary</h3>
+                        <hr />
+                        <div>
+                            <div class="flex items-center justify-between border-b border-dashed py-2">
+                                <p>Subtotal</p>
+                                <p>1000</p>
+                            </div>
+                            <div class="flex items-center justify-between border-b border-dashed py-2">
+                                <p>Online Fee</p>
+                                <p>100</p>
+                            </div>
+                            <div class="flex items-center justify-between border-b border-dashed py-2">
+                                <p>Total</p>
+                                <p>1100</p>
+                            </div>
+                            <div class="flex items-center justify-between border-b border-dashed py-2">
+                                <strong>Payable Total</strong>
+                                <p>11000</p>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+           </div>
+       </div>
+   </div>
+}
+
+@code {
+    private bool IsProcessing { get; set; } = false;
+    private int QuantityCounter { get; set; } = 1;
+    // Quantity Counter
+    private void HandleQuantityCounter(string value)
+    {
+        if (value == "increment")
+        {
+            QuantityCounter++;
+        }
+        else if (value == "decrement" && QuantityCounter > 1)
+        {
+            QuantityCounter--;
+        }
+    }
+
+}
