@@ -1,6 +1,8 @@
 ﻿@page "/product/Details/{id:int}"
 @inject IProductRepository _productRepository
-
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject NavigationManager _navigationManager
+@inject ICartRepository _cartRepository
 @if (IsProcessing)
 {
     <div>
@@ -42,8 +44,9 @@ else
 
                         <div>
                             <div class="mt-5 flex space-x-4">
-                                <button class="flex-1 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition duration-300 hover:bg-blue-700">
-                                  Add to Cart
+                                <button class="flex-1 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition duration-300 hover:bg-blue-700"
+                                        @onclick="() => AddOrderItem(Product)">
+                                        Add to Cart
                                 </button>
                                 <button class="rounded-lg border border-gray-300 px-6 py-3 transition duration-300 hover:bg-gray-50">
                                     <i class="fa-solid fa-heart"></i>
@@ -81,6 +84,7 @@ else
     public int Id { get; set; }
 
     private bool IsProcessing { get; set; } = false;
+    // private IEnumerable<Product> products = new List<Product>();
     private Product Product { get; set; } = new Product();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -97,5 +101,30 @@ else
         Product = await _productRepository.GetAsync(Id);
     }
 
+    // Product Add to cart
+    private async Task AddOrderItem(Product product)
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
+        if (!authenticated)
+        {
+            _navigationManager.NavigateTo("account/login");
+        }
+        else
+        {
+            // add to cart item
+            var userId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+            var result = await _cartRepository.UpdateCartAsync(userId, product.Id, 1);
+            if(result)
+            {
+                Console.WriteLine("Product added to cart successfully!");
+            }
+            else
+            {
+                Console.WriteLine("Error encountered");
+            }
+        }
+    }
 
 }
