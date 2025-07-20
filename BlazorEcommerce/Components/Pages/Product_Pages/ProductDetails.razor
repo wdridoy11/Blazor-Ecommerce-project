@@ -1,8 +1,10 @@
 ﻿@page "/product/Details/{id:int}"
+@using BlazorEcommerce.Services
 @inject IProductRepository _productRepository
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject NavigationManager _navigationManager
 @inject ICartRepository _cartRepository
+@inject SharedStateService _sharedStateService
 @if (IsProcessing)
 {
     <div>
@@ -116,6 +118,7 @@ else
             // add to cart item
             var userId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
             var result = await _cartRepository.UpdateCartAsync(userId, product.Id, 1);
+            _sharedStateService.TotalCartCount = await _cartRepository.GetTotalCartCountAsync(userId);
             if(result)
             {
                 Console.WriteLine("Product added to cart successfully!");

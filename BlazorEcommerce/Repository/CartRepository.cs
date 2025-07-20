@@ -22,9 +22,15 @@ namespace BlazorEcommerce.Repository
             return await _db.ShoppingCart.Where(u => u.UserId == userId).Include(u => u.Product).ToListAsync();
         }
 
-        public Task<int> GetTotalCartCountAsync(string? userId)
+        public async Task<int> GetTotalCartCountAsync(string? userId)
         {
-            throw new NotImplementedException();
+            int cartCounter = 0;
+            var cartItes = await _db.ShoppingCart.Where(u => u.UserId == userId).ToListAsync();
+            foreach(var item in cartItes)
+            {
+                cartCounter += item.Count;
+            }
+            return cartCounter;
         }
 
         public async Task<bool> UpdateCartAsync(string userId, int productId, int updateBy)

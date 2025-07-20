@@ -1,6 +1,9 @@
-﻿@implements IDisposable
+﻿@* @implements IDisposable *@
+@using BlazorEcommerce.Services
 @inject NavigationManager NavigationManager
-
+@inject SharedStateService _sharedStateService
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject ICartRepository _cartRepository
 <nav>
     <div class="bg-slate-700 px-5 py-3 lg:px-10">
         <div class="flex items-center justify-between">
@@ -12,7 +15,7 @@
                     <NavLink class="text-base text-white" href="/">Product</NavLink>
                 </div>
                 <div>
-                    <NavLink class="text-base text-white" href="/cart">Cart (0)</NavLink>
+                    <NavLink class="text-base text-white" href="/cart">Cart (@_sharedStateService.TotalCartCount)</NavLink>
                 </div>
                 <div>
                     <NavLink class="text-base text-white" href="/">Product</NavLink>
@@ -57,6 +60,8 @@
     {
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
+        _sharedStateService.OnChange += OnSharedStateChange;
+
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
@@ -65,9 +70,26 @@
         StateHasChanged();
     }
 
+
+
+    private void OnSharedStateChange()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public async Task GetInitialCount()
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        _sharedStateService.TotalCartCount = await _cartRepository.GetTotalCartCountAsync(user?.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value);
+
+    }
     public void Dispose()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
+        _sharedStateService.OnChange -= OnSharedStateChange;
     }
+
 }
 
