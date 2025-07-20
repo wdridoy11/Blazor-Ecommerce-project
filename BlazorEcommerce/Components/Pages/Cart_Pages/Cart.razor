@@ -1,4 +1,8 @@
 ﻿@page "/cart"
+@using System.Globalization
+@inject ICartRepository _cartRepository
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject NavigationManager _navigationManager
 
 @if (IsProcessing)
 {
@@ -10,96 +14,149 @@
 }
 else
 {
-    <div class="bg-[#EFF3F6] p-5">
-       <div class="container mx-auto px-5">
-           <div>
-               <div class="grid grid-cols-3 gap-5">
-                   <div class="col-span-2 rounded-md bg-white p-5">
-                       <div>
-                           <table class="w-full table-fixed">
-                               <thead>
-                                   <tr class="text-left">
-                                       <th>Product</th>
-                                       <th>Price</th>
-                                       <th>Quantity</th>
-                                       <th>Total Price</th>
-                                   </tr>
-                               </thead>
-                               <tbody>
-                                   <tr class="items-center">
-                                       <td>
-                                           <div class="flex items-center gap-5">
-                                                <div>
-                                                    <img class="h-20 w-20 rounded-md" src="./images/Image-11.jpg" alt="Product" />
-                                                </div>
-                                                <div>
-                                                    <h4>Headphone</h4>
-                                                </div>
-                                           </div>
-                                       </td>
-                                       <td>
-                                           $20.50
-                                       </td>
-                                       <td>
-                                            <div>
-                                                <label class="mb-2 block text-sm font-medium text-gray-700"> Quantity</label>
-                                                <div class="flex items-center space-x-3">
+    @if(shoppingCarts.Any())
+    {
+        <div class="bg-[#EFF3F6] p-5">
+            <div class="container mx-auto px-5">
+                <div>
+                    <div class="grid grid-cols-3 gap-5">
+                        <div class="col-span-2 rounded-md bg-white p-5">
+                            <div>
+                                <table class="w-full table-fixed">
+                                    <thead>
+                                        <tr class="text-left">
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total Price</th>
+                                        </tr>
+                                    </thead>
+                                    @foreach(var cartItem in shoppingCarts)
+                                    {
+                                        <tbody>
+                                            <tr class="items-center">
+                                                <td>
+                                                    <div class="flex items-center gap-5">
+                                                        <div>
+                                                            <img class="h-20 w-20 rounded-md" src="@cartItem.Product.ImageUrl" alt="@cartItem.Product.Name" />
+                                                        </div>
+                                                        <div>
+                                                            <h4>@cartItem.Product.Name</h4>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td> @cartItem.Product.Price.ToString("c", CultureInfo.GetCultureInfo("en-us")) </td>
+                                                <td>
+                                                    <div class="flex items-center space-x-3">
+                                                        <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter("decrement")'>
+                                                            <i class="fa-solid fa-minus"></i>
+                                                        </button>
 
-                                                    <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter("decrement")'>
-                                                        <i class="fa-solid fa-minus"></i>
-                                                    </button>
+                                                        <span class="min-w-[60px] rounded-md border border-gray-300 px-4 py-2 text-center">@QuantityCounter</span>
 
-                                                    <span class="min-w-[60px] rounded-md border border-gray-300 px-4 py-2 text-center">@QuantityCounter</span>
-
-                                                    <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter("increment")'>
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </button>
-
-                                                </div>
-                                            </div>
-                                       </td>
-                                       <td>
-                                           $20.50
-                                       </td>
-                                   </tr>
-                               </tbody>
-                           </table>
-                       </div>
-                       <div>
-
-                       </div>
-                   </div>
-                    <div class="col-span-1 rounded-md bg-white p-5">
-                        <h3 class="mb-2 text-2xl font-semibold">Checkout Summary</h3>
-                        <hr />
-                        <div>
-                            <div class="flex items-center justify-between border-b border-dashed py-2">
-                                <p>Subtotal</p>
-                                <p>1000</p>
+                                                        <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter("increment")'>
+                                                            <i class="fa-solid fa-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <h4>@cartItem.Product.Price.ToString("c", CultureInfo.GetCultureInfo("en-us"))</h4>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    }
+                                    
+                                </table>
                             </div>
-                            <div class="flex items-center justify-between border-b border-dashed py-2">
-                                <p>Online Fee</p>
-                                <p>100</p>
+                            <div>
                             </div>
-                            <div class="flex items-center justify-between border-b border-dashed py-2">
-                                <p>Total</p>
-                                <p>1100</p>
-                            </div>
-                            <div class="flex items-center justify-between border-b border-dashed py-2">
-                                <strong>Payable Total</strong>
-                                <p>11000</p>
+                        </div>
+                        <div class="col-span-1 rounded-md bg-white p-5">
+                            <h3 class="mb-2 text-2xl font-semibold">Checkout Summary</h3>
+                            <hr />
+                            <div>
+                                <div class="flex items-center justify-between border-b border-dashed py-2">
+                                    <p>Subtotal</p>
+                                    <p>1000</p>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-dashed py-2">
+                                    <p>Online Fee</p>
+                                    <p>100</p>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-dashed py-2">
+                                    <p>Total</p>
+                                    <p>1100</p>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-dashed py-2">
+                                    <strong>Payable Total</strong>
+                                    <p>11000</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-               </div>
-           </div>
-       </div>
-   </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="p-4">
+            <div class="rounded-md bg-yellow-300 p-10">
+                Your cart is empty! Please add items to cart.
+            </div>
+        </div>
+        @foreach(var cart in shoppingCarts)
+        {
+            <p>(@cart.Count ? "0":"1")</p>
+        }
+    }
 }
 
 @code {
+    private IEnumerable<ShoppingCart> shoppingCarts = new List<ShoppingCart>();
     private bool IsProcessing { get; set; } = false;
     private int QuantityCounter { get; set; } = 1;
+    private string UserId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            var userId = user?.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                shoppingCarts = await _cartRepository.GetAllAsync(userId);
+            }
+        }
+    }
+    // user?.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         await LoadCart();
+    //         IsProcessing = false;
+    //         StateHasChanged();
+    //     }
+    // }
+
+    // Load Cart
+    // private async Task LoadCart()
+    // {
+    //     var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+    //     var user = authState.User;
+    //     if(user.Identity != null && user.Identity.IsAuthenticated)
+    //     {
+    //         var userId = user.FindFirst(u => u.Type.Contains("nameIdentifier"))?.Value;
+    //         if (!string.IsNullOrEmpty(userId))
+    //         {
+    //             shoppingCarts = await _cartRepository.GetAllAsync(userId);
+    //         }
+    //     }
+    // }
+
     // Quantity Counter
     private void HandleQuantityCounter(string value)
     {

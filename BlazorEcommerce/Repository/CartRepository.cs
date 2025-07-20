@@ -19,13 +19,15 @@ namespace BlazorEcommerce.Repository
 
         public async Task<IEnumerable<ShoppingCart>> GetAllAsync(string? userId)
         {
-            return await _db.ShoppingCart.Where(u => u.UserId == userId).Include(u => u.Product).ToListAsync();
+            //return await _db.ShoppingCart.Where(u => u.UserId == userId).Include(u => u.Product).ToListAsync();
+            return await _db.ShoppingCart.Include(u => u.Product).ToListAsync();
         }
 
         public async Task<int> GetTotalCartCountAsync(string? userId)
         {
             int cartCounter = 0;
             var cartItes = await _db.ShoppingCart.Where(u => u.UserId == userId).ToListAsync();
+            //var cartItes = await _db.ShoppingCart.ToListAsync();
             foreach(var item in cartItes)
             {
                 cartCounter += item.Count;
