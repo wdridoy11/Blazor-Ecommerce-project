@@ -1,8 +1,10 @@
 ﻿@page "/cart"
 @using System.Globalization
+@using BlazorEcommerce.Services
 @inject ICartRepository _cartRepository
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject NavigationManager _navigationManager
+@inject SharedStateService _sharedStateService
 
 @if (IsProcessing)
 {
@@ -48,19 +50,20 @@ else
                                                 <td> @cartItem.Product.Price.ToString("c", CultureInfo.GetCultureInfo("en-us")) </td>
                                                 <td>
                                                     <div class="flex items-center space-x-3">
-                                                        <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter("decrement")'>
+                                                        <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter(cartItem.ProductId, -1)'>
                                                             <i class="fa-solid fa-minus"></i>
                                                         </button>
 
-                                                        <span class="min-w-[60px] rounded-md border border-gray-300 px-4 py-2 text-center">@QuantityCounter</span>
+                                                        <span class="min-w-[60px] rounded-md border border-gray-300 px-4 py-2 text-center">@cartItem.Count</span>
 
-                                                        <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter("increment")'>
+                                                        <button class="rounded-md border border-gray-300 p-2 hover:bg-gray-50" @onclick='() => HandleQuantityCounter(cartItem.ProductId, 1)'>
                                                             <i class="fa-solid fa-plus"></i>
                                                         </button>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <h4>@cartItem.Product.Price.ToString("c", CultureInfo.GetCultureInfo("en-us"))</h4>
+                                                    @* <h4>@cartItem.Product.Price.ToString("c", CultureInfo.GetCultureInfo("en-us"))</h4> *@
+                                                    <h4>@(cartItem.Product.Price* cartItem.Count)</h4>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -120,6 +123,32 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        // var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        // var user = authState.User;
+        // if (user.Identity != null && user.Identity.IsAuthenticated)
+        // {
+        //     var userId = user?.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        //     if (!string.IsNullOrEmpty(userId))
+        //     {
+        //         shoppingCarts = await _cartRepository.GetAllAsync(userId);
+        //         UserId = userId;
+        //     }
+        // }
+    }
+    // user?.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadCart();
+            IsProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+    // Load Cart
+    private async Task LoadCart()
+    {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         if (user.Identity != null && user.Identity.IsAuthenticated)
@@ -128,46 +157,17 @@ else
             if (!string.IsNullOrEmpty(userId))
             {
                 shoppingCarts = await _cartRepository.GetAllAsync(userId);
+                UserId = userId;
             }
         }
     }
-    // user?.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if (firstRender)
-    //     {
-    //         await LoadCart();
-    //         IsProcessing = false;
-    //         StateHasChanged();
-    //     }
-    // }
-
-    // Load Cart
-    // private async Task LoadCart()
-    // {
-    //     var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-    //     var user = authState.User;
-    //     if(user.Identity != null && user.Identity.IsAuthenticated)
-    //     {
-    //         var userId = user.FindFirst(u => u.Type.Contains("nameIdentifier"))?.Value;
-    //         if (!string.IsNullOrEmpty(userId))
-    //         {
-    //             shoppingCarts = await _cartRepository.GetAllAsync(userId);
-    //         }
-    //     }
-    // }
 
     // Quantity Counter
-    private void HandleQuantityCounter(string value)
+    private async Task HandleQuantityCounter(int productId, int updateBy)
     {
-        if (value == "increment")
-        {
-            QuantityCounter++;
-        }
-        else if (value == "decrement" && QuantityCounter > 1)
-        {
-            QuantityCounter--;
-        }
+        var result = await _cartRepository.UpdateCartAsync(UserId, productId, updateBy);
+        _sharedStateService.TotalCartCount = await _cartRepository.GetTotalCartCountAsync(UserId);
+        await LoadCart();
     }
 
 }

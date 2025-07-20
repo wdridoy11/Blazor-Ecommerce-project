@@ -57,7 +57,7 @@ namespace BlazorEcommerce.Repository
             else
             {
                 cart.Count += updateBy;
-                if (cart.Count > 0)
+                if (cart.Count <= 0)
                 {
                     _db.ShoppingCart.Remove(cart);
                 }
