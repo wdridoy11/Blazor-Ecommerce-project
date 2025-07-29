@@ -65,7 +65,9 @@ else
                                      class="w-full rounded-md border px-5 py-3 outline-0 focus:border-green-200" />
                                 <ValidationMessage For="@(() => OrderHeader.ZipCode)" />
                              </div>
-
+                            <button type="submit" class="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+                                Place Order
+                             </button>
                          </EditForm>
                      </div>
 
@@ -88,9 +90,6 @@ else
                                 <div class="flex items-center justify-between border-b border-dashed py-2">
                                     <strong>Payable Total</strong>
                                     <p>$Total</p>
-                                </div>
-                                <div>
-                                    <a href="/checkout" class="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">Proceed To Order</a>
                                 </div>
                             </div>
                         </div>
