@@ -4,25 +4,35 @@
 
 <div>
     <div>
-        <div class="top-row navbar navbar-dark ps-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="">BlazorEcommerce</a>
+        <div class="">
+            <div class="">
+                <a class="" href="/">
+                    <img class="mx-auto w-9/12 py-5" src="./images/logo.png" alt="Logo" />
+                </a>
             </div>
         </div>
 
         <div onclick="document.querySelector('.navbar-toggler').click()">
-            <nav class="flex flex-col items-start gap-8 px-5">
-                <div>
-                    <NavLink class="text-base text-black" Match="NavLinkMatch.All" href="/">Home</NavLink>
+            <nav class="flex flex-col items-start px-5">
+                <div class="w-full cursor-pointer rounded-md p-3 hover:bg-slate-100">
+                    <NavLink class="flex items-center gap-2 text-base font-medium text-gray-500" Match="NavLinkMatch.All" href="/">
+                        <i class="fa-solid fa-border-all"></i> <p>Dashboard</p>
+                    </NavLink>
                 </div>
-                <div>
-                    <NavLink class="text-base text-black" Match="NavLinkMatch.All" href="category">Add Category</NavLink>
+                <div class="w-full cursor-pointer rounded-md p-3 hover:bg-slate-100">
+                    <NavLink class="flex items-center gap-2 text-base font-medium text-gray-500" Match="NavLinkMatch.All" href="category">
+                        <i class="fa-solid fa-list"></i> <p>Add Category</p>
+                    </NavLink>
                 </div>
-                <div>
-                    <NavLink class="text-base text-black" Match="NavLinkMatch.All" href="product">Add Product</NavLink>
+                <div class="w-full cursor-pointer rounded-md p-3 hover:bg-slate-100">
+                    <NavLink class="flex items-center gap-2 text-base font-medium text-gray-500" Match="NavLinkMatch.All" href="product">
+                        <i class="fa-solid fa-bag-shopping"></i> <p>Add Product</p>
+                    </NavLink>
                 </div>
-                <div>
-                    <NavLink class="text-base text-black" Match="NavLinkMatch.All" href="auth">Auth Required</NavLink>
+                <div class="w-full cursor-pointer rounded-md p-3 hover:bg-slate-100">
+                    <NavLink class="flex items-center gap-2 text-base font-medium text-gray-500" Match="NavLinkMatch.All" href="auth">
+                        Auth Required
+                    </NavLink>
                 </div>
                 <AuthorizeView>
                     <Authorized>
