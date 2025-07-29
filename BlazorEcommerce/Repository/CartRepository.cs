@@ -17,6 +17,16 @@ namespace BlazorEcommerce.Repository
             throw new NotImplementedException();
         }
 
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var obj = await _db.ShoppingCart.FirstOrDefaultAsync(x => x.Id == id);
+            if (obj != null) { 
+                _db.ShoppingCart.Remove(obj);
+                return (await _db.SaveChangesAsync()) > 0;
+            }
+            return false;
+        }
+
         public async Task<IEnumerable<ShoppingCart>> GetAllAsync(string? userId)
         {
             //return await _db.ShoppingCart.Where(u => u.UserId == userId).Include(u => u.Product).ToListAsync();
