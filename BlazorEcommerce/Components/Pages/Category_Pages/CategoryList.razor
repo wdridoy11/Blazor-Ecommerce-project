@@ -12,9 +12,9 @@
 }
 else
 {
-    <div>
+    <div class="rounded-md bg-white p-5">
         <div>
-            <div class="flex items-center justify-between py-5">
+            <div class="flex items-center justify-between border-b py-5">
                 <div>
                     <h3 class="text-3xl font-medium">Category List</h3>
                 </div>
@@ -24,24 +24,48 @@ else
                     </a>
                 </div>
             </div>
-            <div class="w-full rounded-lg bg-slate-100 p-5">
+
+            <div>
+                <RadzenDataGrid AllowFiltering="false" AllowColumnResize="false" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="false" PageSize="20" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                                Data="@Categories" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single">
+                    <Columns>
+                        <RadzenDataGridColumn Property="@nameof(Category.Id)" Title="Id" Width="160px" />
+                        <RadzenDataGridColumn Property="@nameof(Category.Name)" Title="Name" Width="160px" />
+                        <RadzenDataGridColumn Context="Category" Filterable="false" Title="Action" Sortable="false">
+                            <Template>
+                                <div>
+                                    <a href="@($"/category/update/{Category.Id}")" class="inline-block rounded-full bg-blue-600 px-4 py-2 text-white">
+                                        <i class="fa-solid fa-pen-to-square"></i> Edit
+                                    </a>
+
+                                    <button @onclick="() => CategoryDelete(Category.Id)" class="inline-block rounded-full bg-red-500 px-4 py-2 text-white">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+
+            </div>
+            @* <div class="w-full rounded-lg">
                 @if (Categories.Any())
                 {
-                    <table class="w-full table-fixed border-collapse">
+                    <table class="w-full table-fixed border-collapse border border-gray-400">
                         <thead>
-                            <tr class="round-t-lg bg-white py-2 text-left">
-                                <th class="py-2">Id</th>
-                                <th class="py-2">Name</th>
-                                <th class="py-2">Action</th>
+                            <tr class="round-t-lg text-left">
+                                <th class="border-blue-gray-100 bg-blue-gray-50 border-b p-4">Id</th>
+                                <th class="border-blue-gray-100 bg-blue-gray-50 border-b p-4">Name</th>
+                                <th class="border-blue-gray-100 bg-blue-gray-50 border-b p-4">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var category in Categories)
                             {
-                                <tr>
-                                    <td class="py-2">@category.Id</td>
-                                    <td class="py-2">@category.Name</td>
-                                    <td class="py-2">
+                                <tr class="even:bg-blue-gray-50/50">
+                                    <td class="border border-gray-300 py-2">@category.Id</td>
+                                    <td class="border border-gray-300 py-2">@category.Name</td>
+                                    <td class="border border-gray-300 py-2">
                                         <a href="@($"/category/update/{category.Id}")" class="inline-block rounded-full bg-blue-600 px-4 py-2 text-white">
                                             <i class="fa-solid fa-pen-to-square"></i> Edit
                                          </a>
@@ -59,7 +83,7 @@ else
                 {
                     <span class="text-red-500">No Categories Found</span>
                 }
-            </div>
+            </div> *@
         </div>
         @Text
     </div>

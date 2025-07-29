@@ -1,16 +1,16 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-    @* <div class="sidebar">
-        <NavMenu />
-    </div> *@
+    <div class="sidebar">
+        <NavBarAdmin />
+    </div>
 
     <main>
         <div>
-            <NavMenu />
+            @* <NavMenu /> *@
         </div>
 
-        <article class="">
+        <article class="@( isAdmin ? "p-5 bg-[#F6F6F6] h-screen" : "" )">
             @Body
         </article>
     </main>
@@ -21,3 +21,7 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code{
+    private bool isAdmin { get; set; } = true;
+}

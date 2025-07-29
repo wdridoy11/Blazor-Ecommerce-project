@@ -1,6 +1,7 @@
 ﻿@page "/cart"
 @using System.Globalization
 @using BlazorEcommerce.Services
+@using System.Linq;
 @inject ICartRepository _cartRepository
 @inject IJSRuntime _JSRuntime
 @inject AuthenticationStateProvider _authenticationStateProvider
@@ -88,7 +89,7 @@ else
                             <div>
                                 <div class="flex items-center justify-between border-b border-dashed py-2">
                                     <p>Subtotal</p>
-                                    <p>1000</p>
+                                    <p>@foreach (var cartItem in shoppingCarts) { @cartItem.Product.Price}</p>
                                 </div>
                                 <div class="flex items-center justify-between border-b border-dashed py-2">
                                     <p>Online Fee</p>
@@ -129,6 +130,17 @@ else
     private int QuantityCounter { get; set; } = 1;
     private string UserId { get; set; }
 
+    protected override Task OnInitializedAsync()
+    {
+        int count = shoppingCarts.Count(); // Make sure to add 'using System.Linq;'
+        for (int i = 0; i < count; i++)
+        {
+            Console.Write("Result : ", i );
+        }
+
+        return Task.CompletedTask;
+    }
+
 
     // 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -139,6 +151,7 @@ else
             IsProcessing = false;
             StateHasChanged();
         }
+      
     }
 
     // Load Cart product
