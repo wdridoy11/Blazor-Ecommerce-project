@@ -89,19 +89,19 @@ else
                             <div>
                                 <div class="flex items-center justify-between border-b border-dashed py-2">
                                     <p>Subtotal</p>
-                                    <p>@foreach (var cartItem in shoppingCarts) { @cartItem.Product.Price}</p>
+                                    <p>$@TotalPrice</p>
                                 </div>
                                 <div class="flex items-center justify-between border-b border-dashed py-2">
                                     <p>Online Fee</p>
-                                    <p>100</p>
+                                    <p>$100</p>
                                 </div>
                                 <div class="flex items-center justify-between border-b border-dashed py-2">
                                     <p>Total</p>
-                                    <p>1100</p>
+                                    <p>$@Total</p>
                                 </div>
                                 <div class="flex items-center justify-between border-b border-dashed py-2">
                                     <strong>Payable Total</strong>
-                                    <p>11000</p>
+                                    <p>$@Total</p>
                                 </div>
                             </div>
                         </div>
@@ -129,30 +129,27 @@ else
     private bool IsProcessing { get; set; } = false;
     private int QuantityCounter { get; set; } = 1;
     private string UserId { get; set; }
-
-    protected override Task OnInitializedAsync()
-    {
-        int count = shoppingCarts.Count(); // Make sure to add 'using System.Linq;'
-        for (int i = 0; i < count; i++)
-        {
-            Console.Write("Result : ", i );
-        }
-
-        return Task.CompletedTask;
-    }
+    private decimal TotalPrice { get; set; }
+    private decimal Total { get; set; }
 
 
-    // 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await LoadCart();
+            CalculateTotal();
             IsProcessing = false;
             StateHasChanged();
         }
-
     }
+
+    private void CalculateTotal()
+    {
+        TotalPrice = shoppingCarts.Sum(item => item.Product.Price * item.Count);
+        Total = TotalPrice + 100;
+    }
+
 
     // Load Cart product
     private async Task LoadCart()
@@ -175,7 +172,9 @@ else
     {
         var result = await _cartRepository.UpdateCartAsync(UserId, productId, updateBy);
         _sharedStateService.TotalCartCount = await _cartRepository.GetTotalCartCountAsync(UserId);
-        await LoadCart();
+        
+        await LoadCart(); // Cart data load
+        CalculateTotal(); // Total Price count 
     }
 
     private async Task CartItemDelete(int Id)
@@ -187,7 +186,7 @@ else
             await _cartRepository.DeleteAsync(Id);
             IsProcessing = false;
             await LoadCart();
-            await _JSRuntime.InvokeVoidAsync("showSwal", "success", "Cart Product Delete Successfully");
+            await _JSRuntime.InvokeVoidAsync("showSwal", "success", "Cart Product Delete Successful");
         }
     }
 }

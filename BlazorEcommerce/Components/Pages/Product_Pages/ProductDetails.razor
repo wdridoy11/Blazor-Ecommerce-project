@@ -111,7 +111,7 @@ else
         var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
         if (!authenticated)
         {
-            _navigationManager.NavigateTo("account/login");
+            _navigationManager.NavigateTo("Account/login");
         }
         else
         {
