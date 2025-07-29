@@ -1,0 +1,111 @@
+﻿@page "/checkout";
+
+
+@if (IsProcessing)
+{
+    <div>
+        <dvi>
+            <p>Loading.....</p>
+        </dvi>
+    </div>
+}
+else
+{
+     <div class="h-screen overflow-y-scroll bg-[#EFF3F6] p-5">
+         <div class="container mx-auto px-5">
+             <div>
+                 <div class="grid grid-cols-3 gap-5">
+                     <div class="col-span-2 rounded-md bg-white p-5">
+                         <EditForm Model="OrderHeader" FormName="OrderAddress" OnValidSubmit="ProcessOrderCreation">
+                             <DataAnnotationsValidator />
+                             <div class="mb-3">
+                                 <label>Name</label>
+                                 <InputText 
+                                     @bind-Value="OrderHeader.Name" 
+                                     type="text" 
+                                     class="w-full rounded-md border px-5 py-3 outline-0 focus:border-green-200" />
+                                 <ValidationMessage For="@(()=> OrderHeader.Name)"/>
+                             </div>
+                            <div class="mb-3">
+                                 <label>Email</label>
+                                  <InputText 
+                                      @bind-Value="OrderHeader.Email" 
+                                      type="email"
+                                      class="w-full rounded-md border px-5 py-3 outline-0 focus:border-green-200" />
+                                  <ValidationMessage For="@(()=> OrderHeader.Email)"/>
+                             </div>
+                            <div class="mb-3">
+                                 <label>Phone Number</label>
+                                <InputText 
+                                    @bind-Value="OrderHeader.PhoneNumber" 
+                                     type="number"
+                                     class="w-full rounded-md border px-5 py-3 outline-0 focus:border-green-200" />
+                                <ValidationMessage For="@(() => OrderHeader.PhoneNumber)" />
+                             </div>
+                            <div class="mb-3">
+                                 <label>City</label>
+                                 <InputText 
+                                     @bind-Value="OrderHeader.City" 
+                                     type="text"
+                                     class="w-full rounded-md border px-5 py-3 outline-0 focus:border-green-200" />
+                                <ValidationMessage For="@(() => OrderHeader.City)" />
+                             </div>
+                            <div class="mb-3">
+                                <label>State</label>
+                                 <InputText 
+                                     @bind-Value="OrderHeader.State"
+                                      type="text"
+                                     class="w-full rounded-md border px-5 py-3 outline-0 focus:border-green-200" />
+                                <ValidationMessage For="@(() => OrderHeader.State)" />
+                             </div>
+                            <div class="mb-3">
+                                <label>ZipCode</label>
+                                 <InputText @bind-Value="OrderHeader.ZipCode"
+                                      type="number"
+                                     class="w-full rounded-md border px-5 py-3 outline-0 focus:border-green-200" />
+                                <ValidationMessage For="@(() => OrderHeader.ZipCode)" />
+                             </div>
+
+                         </EditForm>
+                     </div>
+
+                     <div class="col-span-1 rounded-md bg-white p-5">
+                            <h3 class="mb-2 text-2xl font-semibold">Checkout Summary</h3>
+                            <hr />
+                            <div>
+                                <div class="flex items-center justify-between border-b border-dashed py-2">
+                                    <p>Subtotal</p>
+                                    <p>$TotalPrice</p>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-dashed py-2">
+                                    <p>Online Fee</p>
+                                    <p>$100</p>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-dashed py-2">
+                                    <p>Total</p>
+                                    <p>$Total</p>
+                                </div>
+                                <div class="flex items-center justify-between border-b border-dashed py-2">
+                                    <strong>Payable Total</strong>
+                                    <p>$Total</p>
+                                </div>
+                                <div>
+                                    <a href="/checkout" class="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">Proceed To Order</a>
+                                </div>
+                            </div>
+                        </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+}
+
+
+@code {
+    private bool IsProcessing { get; set; } = false;
+    public OrderHeader OrderHeader { get; set; } = new OrderHeader();
+    private async Task ProcessOrderCreation()
+    {
+        
+    }
+}

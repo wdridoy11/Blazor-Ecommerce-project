@@ -20,7 +20,7 @@ else
 {
     @if(shoppingCarts.Any())
     {
-        <div class="bg-[#EFF3F6] p-5">
+        <div class="h-screen overflow-y-scroll bg-[#EFF3F6] p-5">
             <div class="container mx-auto px-5">
                 <div>
                     <div class="grid grid-cols-3 gap-5">
@@ -102,6 +102,12 @@ else
                                 <div class="flex items-center justify-between border-b border-dashed py-2">
                                     <strong>Payable Total</strong>
                                     <p>$@Total</p>
+                                </div>
+                                <div>
+                                    @* <button class="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+                                        Proceed To Order
+                                    </button> *@
+                                    <a href="/checkout" class="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">Proceed To Order</a>
                                 </div>
                             </div>
                         </div>
