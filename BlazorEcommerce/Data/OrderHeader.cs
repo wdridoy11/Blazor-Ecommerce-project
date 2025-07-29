@@ -14,7 +14,7 @@ namespace BlazorEcommerce.Data
         public double OrderTotal { get; set; }
 
         [Required]
-        public DateTime DateTime { get; set; }
+        public DateTime OrderDate { get; set; }
 
         [Required]
         public string Status { get; set; }

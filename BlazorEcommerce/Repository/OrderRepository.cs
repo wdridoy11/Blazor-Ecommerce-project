@@ -5,7 +5,13 @@ namespace BlazorEcommerce.Repository
 {
     public class OrderRepository : IOrderRepository
     {
-        public Task<OrderHeader> CreateAsync(OrderHeader orderHeader)
+        private readonly ApplicationDbContext _db;
+        public OrderRepository(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
+        public async Task<OrderHeader> CreateAsync(OrderHeader orderHeader)
         {
             throw new NotImplementedException();
         }
