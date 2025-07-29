@@ -1,6 +1,7 @@
 ﻿@page "/product/Details/{id:int}"
 @using BlazorEcommerce.Services
 @inject IProductRepository _productRepository
+@inject IJSRuntime _JSRuntime
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject NavigationManager _navigationManager
 @inject ICartRepository _cartRepository
@@ -84,10 +85,9 @@ else
 @code {
     [Parameter]
     public int Id { get; set; }
-
     private bool IsProcessing { get; set; } = false;
-    // private IEnumerable<Product> products = new List<Product>();
     private Product Product { get; set; } = new Product();
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if(firstRender)
@@ -121,11 +121,11 @@ else
             _sharedStateService.TotalCartCount = await _cartRepository.GetTotalCartCountAsync(userId);
             if(result)
             {
-                Console.WriteLine("Product added to cart successfully!");
+                await _JSRuntime.InvokeVoidAsync("showSwal", "success", "Cart Added Successfully");
             }
             else
             {
-                Console.WriteLine("Error encountered");
+                await _JSRuntime.InvokeVoidAsync("showSwal", "error", "Something is wrong!");
             }
         }
     }

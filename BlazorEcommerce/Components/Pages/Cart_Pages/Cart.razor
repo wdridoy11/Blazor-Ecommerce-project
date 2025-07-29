@@ -151,7 +151,7 @@ else
             IsProcessing = false;
             StateHasChanged();
         }
-      
+
     }
 
     // Load Cart product
@@ -186,6 +186,8 @@ else
             IsProcessing = true;
             await _cartRepository.DeleteAsync(Id);
             IsProcessing = false;
+            await LoadCart();
+            await _JSRuntime.InvokeVoidAsync("showSwal", "success", "Cart Product Delete Successfully");
         }
     }
 }

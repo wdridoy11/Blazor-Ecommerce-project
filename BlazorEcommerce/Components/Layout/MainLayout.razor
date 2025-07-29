@@ -1,13 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-    <div class="sidebar">
+    @* <div class="sidebar">
         <NavBarAdmin />
-    </div>
+    </div> *@
 
     <main>
         <div>
-            @* <NavMenu /> *@
+            <NavMenu />
         </div>
 
         <article class="@( isAdmin ? "p-5 bg-[#F6F6F6] h-screen overflow-y-scroll" : "" )">
@@ -23,5 +23,5 @@
 </div>
 
 @code{
-    private bool isAdmin { get; set; } = true;
+    private bool isAdmin { get; set; } = false;
 }
