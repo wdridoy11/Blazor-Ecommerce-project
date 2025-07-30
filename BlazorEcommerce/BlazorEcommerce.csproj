@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="Components\Pages\Order_Pages\" />
-    <Folder Include="Utility\" />
   </ItemGroup>
 
 </Project>

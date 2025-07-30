@@ -13,7 +13,10 @@ namespace BlazorEcommerce.Repository
 
         public async Task<OrderHeader> CreateAsync(OrderHeader orderHeader)
         {
-            throw new NotImplementedException();
+            orderHeader.OrderDate = DateTime.Now;
+            await _db.OrderHeader.AddAsync(orderHeader);
+            await _db.SaveChangesAsync();
+            return orderHeader;
         }
 
         public Task<IEnumerable<OrderHeader>> GetAllAsync(string? userId = null)
